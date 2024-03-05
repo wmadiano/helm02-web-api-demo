@@ -1,0 +1,66 @@
+# Deployment configuration
+app1:
+  replicaCount: 3
+  image:
+    repository: wmadiano/demojwt
+    tag: latest
+    pullPolicy: Always
+  nameOverride: ""
+  fullnameOverride: ""
+  containerPort: 8882
+  app:
+    name: api01
+
+app2:
+  replicaCount: 2
+  image:
+    repository: wmadiano/reactjsdemo1
+    tag: latest
+    pullPolicy: Always
+  nameOverride: ""
+  fullnameOverride: ""
+  containerPort: 8882
+  app:
+    name: proto1-fe
+
+
+# Service configuration
+service1:
+  service:
+    name: api01-service
+    app: api01
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+    protocol: TCP
+
+service2:
+  service:
+    name: proto1-fe-service
+    app: proto1-fe
+    type: ClusterIP
+    port: 80
+    targetPort: 8882
+    protocol: TCP
+
+
+# Ingress configuration
+ingress:
+  enabled: true
+  name: my-service-ingress
+  className: "" # Specify if needed
+  hosts:
+    - host: my.test.com
+      paths:
+        - path: /api
+          pathType: Prefix
+          service:
+            name: api01-service
+            port: 80
+        - path: /web
+          pathType: Prefix
+          service:
+            name: proto1-fe-service
+            port: 80
+
+
