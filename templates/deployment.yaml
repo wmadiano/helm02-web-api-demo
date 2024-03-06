@@ -1,0 +1,25 @@
+{{- range $key, $value := .Values.apps }}
+{{- if $value.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" $ }}-{{ $value.app.name }}
+spec:
+  replicas: {{ $value.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $value.app.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $value.app.name }}
+    spec:
+      containers:
+        - name: {{ $.Chart.Name }}-{{ $value.app.name }}
+          image: "{{ $value.image.repository }}:{{ $value.image.tag }}"
+          imagePullPolicy: {{ $value.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $value.containerPort }}
+---
+{{- end }}
+{{- end }}

@@ -1,41 +1,43 @@
 # Deployment configuration
-app1:
-  replicaCount: 1
-  image:
-    repository: wmadiano/demojwt
-    tag: latest
-    pullPolicy: Always
-  nameOverride: ""
-  fullnameOverride: ""
-  containerPort: 3000
-  app:
-    name: api01
-
-app2:
-  replicaCount: 1
-  image:
-    repository: wmadiano/reactjsweb02-demo
-    tag: latest
-    pullPolicy: Always
-  nameOverride: ""
-  fullnameOverride: ""
-  containerPort: 80
-  app:
-    name: proto1-fe
+apps:
+  api01:
+    enabled: true
+    replicaCount: 1
+    image:
+      repository: wmadiano/demojwt
+      tag: latest
+      pullPolicy: Always
+    nameOverride: ""
+    fullnameOverride: ""
+    containerPort: 3000
+    app:
+      name: api01
+  proto1fe:
+    enabled: true
+    replicaCount: 1
+    image:
+      repository: wmadiano/reactjsweb02-demo
+      tag: latest
+      pullPolicy: Always
+    nameOverride: ""
+    fullnameOverride: ""
+    containerPort: 80
+    app:
+      name: proto1-fe
 
 
 # Service configuration
-service1:
-  service:
+services:
+  api01:
+    enabled: true
     name: api01-service
     app: api01
     type: ClusterIP
     port: 80
     targetPort: 3000
     protocol: TCP
-
-service2:
-  service:
+  proto1fe:
+    enabled: true
     name: proto1-fe-service
     app: proto1-fe
     type: ClusterIP
