@@ -1,6 +1,6 @@
 # Deployment configuration
 app1:
-  replicaCount: 3
+  replicaCount: 1
   image:
     repository: wmadiano/demojwt
     tag: latest
@@ -12,14 +12,14 @@ app1:
     name: api01
 
 app2:
-  replicaCount: 2
+  replicaCount: 1
   image:
-    repository: wmadiano/reactjsdemo1
+    repository: wmadiano/reactjsweb02-demo
     tag: latest
     pullPolicy: Always
   nameOverride: ""
   fullnameOverride: ""
-  containerPort: 8882
+  containerPort: 80
   app:
     name: proto1-fe
 
@@ -40,7 +40,7 @@ service2:
     app: proto1-fe
     type: ClusterIP
     port: 80
-    targetPort: 8882
+    targetPort: 80
     protocol: TCP
 
 
