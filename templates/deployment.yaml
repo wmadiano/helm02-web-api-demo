@@ -20,6 +20,13 @@ spec:
           imagePullPolicy: {{ $value.image.pullPolicy }}
           ports:
             - containerPort: {{ $value.containerPort }}
+          env:
+{{- if $value.env }}
+{{- range $value.env }}
+            - name: {{ .name }}
+              value: {{ .value }}
+{{- end }}
+{{- end }}
 ---
 {{- end }}
 {{- end }}

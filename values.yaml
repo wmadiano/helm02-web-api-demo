@@ -7,11 +7,14 @@ apps:
       repository: wmadiano/demojwt
       tag: latest
       pullPolicy: Always
-    nameOverride: ""
-    fullnameOverride: ""
     containerPort: 3000
     app:
       name: api01
+    env:
+      - name: DATABASE_URL
+        value: "jdbc:mysql://example.com:3306/mydb"
+      - name: SECRET_KEY
+        value: "secretvalue"
   proto1fe:
     enabled: true
     replicaCount: 1
@@ -19,11 +22,26 @@ apps:
       repository: wmadiano/reactjsweb02-demo
       tag: latest
       pullPolicy: Always
-    nameOverride: ""
-    fullnameOverride: ""
     containerPort: 80
     app:
       name: proto1-fe
+    env:
+      - name: REACT_APP_API_BASE_URL
+        value: "http://api01-service.default.svc.cluster.local"
+  reactjsdemo1:
+    enabled: false
+    replicaCount: 1
+    image:
+      repository: wmadiano/reactjsdemo1
+      tag: latest
+      pullPolicy: Always
+    containerPort: 80
+    app:
+      name: reactjsdemo1
+    env:
+      - name: REACT_APP_API_BASE_URL
+        value: "http://api01-service.default.svc.cluster.local"
+
 
 
 # Service configuration
@@ -31,15 +49,26 @@ services:
   api01:
     enabled: true
     name: api01-service
+    namespace: default
     app: api01
     type: ClusterIP
     port: 80
     targetPort: 3000
     protocol: TCP
   proto1fe:
+    namespace: default
     enabled: true
     name: proto1-fe-service
     app: proto1-fe
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  reactjsdemo1:
+    namespace: default
+    enabled: false
+    name: reactjsdemo1-service
+    app: reactjsdemo1
     type: ClusterIP
     port: 80
     targetPort: 80
@@ -66,3 +95,10 @@ ingress:
           service:
             name: proto1-fe-service
             port: 80
+    # - host: web2.gresdev.com
+    #   paths:
+    #     - path: /
+    #       pathType: Prefix
+    #       service:
+    #         name: reactjsdemo1-service
+    #         port: 80
