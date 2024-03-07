@@ -24,7 +24,8 @@ spec:
 {{- if $value.env }}
 {{- range $value.env }}
             - name: {{ .name }}
-              value: {{ .value }}
+              value: {{ .value | quote }}
+
 {{- end }}
 {{- end }}
 ---
