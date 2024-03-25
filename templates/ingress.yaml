@@ -1,29 +1,28 @@
-{{- if .Values.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.ingress.name }}
-  {{- if .Values.ingress.className }}
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
-  {{- end }}
+  name: my-service-ingress
+  # Since className is empty, no annotations for ingress.class
 spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
-  {{- end }}
+  # Since className is empty, no ingressClassName is set
   rules:
-  {{- range .Values.ingress.hosts }}
-  - host: {{ .host }}
+  - host: web.gresdev.com
     http:
       paths:
-      {{- range .paths }}
-      - path: {{ .path }}
-        pathType: {{ .pathType }}
+      - path: /
+        pathType: Prefix
         backend:
           service:
-            name: {{ .service.name }}
+            name: proto1-fe-service
             port:
-              number: {{ .service.port }}
-      {{- end }}
-  {{- end }}
-{{- end }}
+              number: 80
+  - host: api2.gresdev.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api02-service
+            port:
+              number: 80
